@@ -11,7 +11,7 @@ import java.util.*;
 @Slf4j
 @Service
 public class CustomerServiceImpl implements CustomerService {
-    private Map<UUID, Customer> customers;
+    private final Map<UUID, Customer> customers;
 
     public CustomerServiceImpl() {
         this.customers = new HashMap<>();
@@ -63,5 +63,17 @@ public class CustomerServiceImpl implements CustomerService {
                 .build();
         customers.put(savedCustomer.getId(), savedCustomer);
         return savedCustomer;
+    }
+
+    @Override
+    public void updateById(UUID id, Customer customer) {
+        Customer updatedCustomer = customers.get(id);
+        updatedCustomer.setCustomerName(customer.getCustomerName());
+        customers.put(updatedCustomer.getId(), updatedCustomer);
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        customers.remove(id);
     }
 }
