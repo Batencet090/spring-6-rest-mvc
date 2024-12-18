@@ -1,6 +1,6 @@
 package guru.springframework.spring6restmvc.controller;
 
-import guru.springframework.spring6restmvc.model.Customer;
+import guru.springframework.spring6restmvc.model.CustomerDTO;
 import guru.springframework.spring6restmvc.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,26 +20,26 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping
-    public List<Customer> customerList() {
+    public List<CustomerDTO> customerList() {
         return customerService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Customer getCustomerById(@PathVariable("id") UUID id) {
+    public CustomerDTO getCustomerById(@PathVariable("id") UUID id) {
         log.debug("Get customer by Id in the controller");
         return customerService.getCustomerById(id);
     }
 
     @PostMapping
-    public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer) {
-        Customer savedCustomer = customerService.save(customer);
+    public ResponseEntity<CustomerDTO> saveCustomer(@RequestBody CustomerDTO customer) {
+        CustomerDTO savedCustomer = customerService.save(customer);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/api/v1/customer/" + savedCustomer.getId().toString());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateCustomer(@PathVariable("id") UUID id, @RequestBody Customer customer) {
+    public ResponseEntity<Void> updateCustomer(@PathVariable("id") UUID id, @RequestBody CustomerDTO customer) {
         customerService.updateById(id, customer);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -51,7 +51,7 @@ public class CustomerController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity patchCustomer(@PathVariable("id") UUID id, @RequestBody Customer customer) {
+    public ResponseEntity patchCustomer(@PathVariable("id") UUID id, @RequestBody CustomerDTO customer) {
         customerService.patchById(id, customer);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
