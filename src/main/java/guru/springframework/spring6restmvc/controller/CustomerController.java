@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import guru.springframework.spring6restmvc.controller.NotFoundException;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +28,8 @@ public class CustomerController {
     @GetMapping("/{id}")
     public CustomerDTO getCustomerById(@PathVariable("id") UUID id) {
         log.debug("Get customer by Id in the controller");
-        return customerService.getCustomerById(id);
+        return customerService.getCustomerById(id)
+                .orElseThrow(NotFoundException::new);
     }
 
     @PostMapping
