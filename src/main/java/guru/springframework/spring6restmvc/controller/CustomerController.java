@@ -8,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import guru.springframework.spring6restmvc.controller.NotFoundException;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,18 +41,26 @@ public class CustomerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateCustomer(@PathVariable("id") UUID id, @RequestBody CustomerDTO customer) {
-        customerService.updateById(id, customer);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (customerService.getCustomerById(id).isPresent()) {
+            customerService.updateById(id, customer);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            throw new NotFoundException("Customer not found for id: " + id);
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable("id") UUID id) {
-        customerService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (customerService.getCustomerById(id).isPresent()) {
+            customerService.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            throw new NotFoundException("Customer not found for id: " + id);
+        }
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity patchCustomer(@PathVariable("id") UUID id, @RequestBody CustomerDTO customer) {
+    public ResponseEntity<Void> patchCustomer(@PathVariable("id") UUID id, @RequestBody CustomerDTO customer) {
         customerService.patchById(id, customer);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

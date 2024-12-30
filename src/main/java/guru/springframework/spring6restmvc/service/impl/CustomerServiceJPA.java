@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @Primary
@@ -39,17 +40,38 @@ public class CustomerServiceJPA implements CustomerService {
     }
 
     @Override
-    public void updateById(UUID id, CustomerDTO customer) {
+    public Optional<CustomerDTO> updateById(UUID id, CustomerDTO customer) {
+        AtomicReference<CustomerDTO> atomicReference = new AtomicReference<>();
+        customerRepository.findById(id).ifPresent(foundCustomer -> {
+            foundCustomer.setCustomerName(customer.getCustomerName());
+            foundCustomer.setCreatedDate(customer.getCreatedDate());
+            foundCustomer.setLastModifiedDate(customer.getLastModifiedDate());
+            atomicReference.set(customerMapper.customerToCustomerDto(customerRepository.save(foundCustomer)));
+        });
 
+        return Optional.ofNullable(atomicReference.get());
     }
 
     @Override
-    public void deleteById(UUID id) {
-
+    public Boolean deleteById(UUID id) {
+        if (customerRepository.existsById(id)) {
+            customerRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void patchById(UUID id, CustomerDTO customer) {
+    public Optional<CustomerDTO> patchById(UUID id, CustomerDTO customer) {
+        AtomicReference<CustomerDTO> atomicReference = new AtomicReference<>();
 
+        customerRepository.findById(id).ifPresent(foundCustomer -> {
+            if (customer.getCustomerName() != null) {
+                foundCustomer.setCustomerName(customer.getCustomerName());
+            }
+            atomicReference.set(customerMapper.customerToCustomerDto(customerRepository.save(foundCustomer)));
+        });
+
+        return Optional.ofNullable(atomicReference.get());
     }
 }
