@@ -15,13 +15,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Customer {
-    private String customerName;
     @Id
     @GeneratedValue(generator = "UUID")
     @UuidGenerator
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(length = 36 , columnDefinition = "varchar" , updatable = false , nullable = false)
     private UUID id;
+    private String customerName;
     @Version
     private int version;
     private LocalDateTime createdDate;
