@@ -1,6 +1,6 @@
 package guru.springframework.spring6restmvc.repositories;
 
-import guru.springframework.spring6restmvc.entities.Customer;
+import guru.springframework.spring6restmvc.entities.Beer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,14 +21,15 @@ public class MySqlIT {
 
     @Container
     @ServiceConnection
-    private static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:9");
+    static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:9");
 
     @Autowired
-    CustomerRepository customerRepository;
+    BeerRepository beerRepository;
 
     @Test
-    void testListCustomers() {
-        List<Customer> customers = customerRepository.findAll();
-        assertThat(customers.size()).isGreaterThan(0);
+    void testListBeers() {
+        List<Beer> beers = beerRepository.findAll();
+
+        assertThat(beers.size()).isGreaterThan(0);
     }
 }
