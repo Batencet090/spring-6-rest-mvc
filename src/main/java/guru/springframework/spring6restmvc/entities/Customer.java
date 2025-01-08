@@ -7,8 +7,10 @@ import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 @Builder
 @Getter
 @Setter
@@ -20,7 +22,7 @@ public class Customer {
     @GeneratedValue(generator = "UUID")
     @UuidGenerator
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(length = 36 , columnDefinition = "varchar" , updatable = false , nullable = false)
+    @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
     private UUID id;
     private String customerName;
     @Column(length = 255)
@@ -29,6 +31,8 @@ public class Customer {
     private int version;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
+
+    @Builder.Default
     @OneToMany(mappedBy = "customer")
-    private Set<BeerOrder> beerOrders;
+    private Set<BeerOrder> beerOrders = new HashSet<>();
 }
